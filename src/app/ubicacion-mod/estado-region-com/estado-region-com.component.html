@@ -1,0 +1,8 @@
+<h2>Pais</h2>
+
+<md-select placeholder="Pais">
+   <md-option *ngFor="let pais of paises" [value]="pais.idPais">{{ pais.nombre }}</md-option>
+</md-select>
+
+<h2>Estados</h2>
+<app-lista [items]="estados" (accionItem)="eventoEjecucion($event)"></app-lista>

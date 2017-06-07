@@ -1,4 +1,18 @@
 <h1>
   {{title}}
 </h1>
+<md-toolbar>
+  <span>{{title}}</span>
+  <span class="spacer"></span>
+  <button md-icon-button title="Ubicación" routerLink="/ubicacion">
+    <md-icon>public</md-icon>
+  </button>
+  <button md-icon-button title="Usuarios" routerLink="/usuario">
+    <md-icon>people</md-icon>
+  </button>
+  <button md-icon-button title="Categorias" routerLink="/categoria">
+    <md-icon>group_work</md-icon>
+  </button>
+</md-toolbar>
 <router-outlet></router-outlet>
+

@@ -1,0 +1,11 @@
+<h1 md-dialog-title>Descripción</h1>
+<div md-dialog-content class="alto-contenido">
+  <md-input-container>
+    <input mdInput #nombre placeholder="Nombre:" [value]="datosEntrada.nombre" (keyup.enter)="dialogRef.close({idPais: datosEntrada.idPais, nombre: nombre.value})" >
+  </md-input-container>
+  <p>Id: {{datosEntrada.id}} nombre: {{nombre.value}}</p>
+</div>
+<div md-dialog-actions>
+  <button md-button (click)="dialogRef.close({idPais: datosEntrada.idPais, nombre: nombre.value})">Aceptar</button>
+  <button md-button (click)="dialogRef.close()">Cancelar</button>
+</div>
