@@ -1,3 +1,8 @@
-<p>
-  categoria-raiz works!
-</p>
+<md-tab-group #tabulador (focusChange)="cambioTab($event)">
+  <md-tab label="Categoría" > 
+    <app-categoria></app-categoria>
+  </md-tab>
+  <md-tab label="Sub Categoría">
+    <app-sub-categoria></app-sub-categoria>
+  </md-tab>
+</md-tab-group>

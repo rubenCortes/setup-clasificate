@@ -4,42 +4,41 @@ import { Observer } from 'rxjs/Observer';
 import { Http, Response } from "@angular/http";
 import { Headers, RequestOptions } from '@angular/http';
 
-import { Poblacion } from "../utilidades";
+import { Categoria } from "../utilidades";
+
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
-export class DatosPoblacionService {
-
-  private urlPoblacion: string = 'http://192.168.10.80:8080/AppAdmin/recursos/poblacion/';
-  private urlPoblacionEstado: string = 'http://192.168.10.80:8080/AppAdmin/recursos/poblacion/estado/';
+export class DatosCategoriaService {
+ private datosCategoria: string = 'http://192.168.10.80:8080/AppAdmin/recursos/categoria/';
 
   constructor( private http: Http ) { }
 
-  private extractData(res: Response): Poblacion[] {
+  private extractData(res: Response): Categoria[] {
     let body = res.json();
-    let datos: Poblacion[] = body;
+    let datos: Categoria[] = body;
+
     return datos;
   }
 
-  getPoblaciones(): Observable<Poblacion[]> {
-    return this.http.get(this.urlPoblacion)
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get(this.datosCategoria)
                   .map(this.extractData)
                   .catch(this.handleError);
   }
 
-  getPoblacionesEstado(id: number): Observable<Poblacion[]> {
-    return this.http.get(this.urlPoblacionEstado + id)
-                    .map(this.extractData)
-                    .catch(this.handleError);
-
+  private extractDataSingle(res: Response): Categoria {
+    let body = res.json();
+    let dato: Categoria = body;
+    return dato;
   }
 
-  private extractDataSingle(res: Response): Poblacion {
-    let body = res.json();
-    let dato: Poblacion = body;
-    return dato;
+  getCategoria(id: number): Observable<Categoria> {
+    return this.http.get(this.datosCategoria + id)
+                  .map(this.extractDataSingle)
+                  .catch(this.handleError);
   }
 
   private handleError (error: Response | any) {
@@ -56,29 +55,30 @@ export class DatosPoblacionService {
     return Observable.throw(errMsg);
   }
 
-  agregarPoblacion(estado: Poblacion): Observable<Poblacion>{
+  agregarCategoria(pais: Categoria): Observable<Categoria>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let body = JSON.stringify(estado);
-    return this.http.post(this.urlPoblacion, body, options)
+    let body = JSON.stringify(pais);
+    return this.http.post(this.datosCategoria, body, options)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }
 
 
-  editarPoblacion(estado: Poblacion): Observable<Poblacion>{
+  editarCategoria(pais: Categoria): Observable<Categoria>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let body = JSON.stringify(estado);
-    return this.http.put(this.urlPoblacion, body, options)
+    let body = JSON.stringify(pais);
+    alert(body);
+    return this.http.put(this.datosCategoria, body, options)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }
 
-    borrarPoblacion(id: number):Observable<Poblacion>{
+  borrarCategoria(id: number):Observable<Categoria>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    return this.http.delete(this.urlPoblacion + id)
+    return this.http.delete(this.datosCategoria + id)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }

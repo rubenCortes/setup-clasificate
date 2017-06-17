@@ -1,3 +1,20 @@
-<p>
-  poblacion-com works!
-</p>
+<h2>Pais</h2>
+
+<md-select placeholder="Pais" [(ngModel)] = "idPaisSeleccionado" name = "pais" (change)="establecePaisSeleccionado()" >
+   <md-option *ngFor="let pais of paises" [value]="pais.id" >{{ pais.nombre }}</md-option>
+</md-select>
+
+
+<h2>Estados</h2>
+
+<md-select placeholder="Estados" [(ngModel)] = "idEstadoSeleccionado" name = "estado" (change)="estableceEstadoSeleccionado()" >
+   <md-option *ngFor="let estado of estados" [value]="estado.id" >{{ estado.nombre }}</md-option>
+</md-select>
+
+<div>
+  <button md-button (click)="abrirDialogo(true)">Agregar <md-icon>add_circle</md-icon></button>  
+</div>
+
+
+<h2>Población</h2>
+<app-lista [items]="poblaciones" (accionItem)="eventoEjecucion($event)"></app-lista>

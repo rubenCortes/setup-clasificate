@@ -8,6 +8,7 @@ import { UtilidadesRoutingModule } from './utilidades-routing.module';
 import { ListaComponent } from './lista/lista.component';
 import { ListaElementoComponent } from './lista-elemento/lista-elemento.component';
 import { DialogoEntradaComponent } from './dialogo-entrada/dialogo-entrada.component';
+import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-confirmacion.component';
 
 @NgModule({
   imports: [
@@ -16,7 +17,7 @@ import { DialogoEntradaComponent } from './dialogo-entrada/dialogo-entrada.compo
     HttpModule,
     UtilidadesRoutingModule
   ],
-  declarations: [ListaComponent, ListaElementoComponent, DialogoEntradaComponent],
-  exports: [ListaComponent, DialogoEntradaComponent]
+  declarations: [ListaComponent, ListaElementoComponent, DialogoEntradaComponent, DialogoConfirmacionComponent],
+  exports: [ListaComponent, DialogoEntradaComponent, DialogoConfirmacionComponent]
 })
 export class UtilidadesModule { }

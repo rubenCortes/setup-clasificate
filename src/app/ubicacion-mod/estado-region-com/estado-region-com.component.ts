@@ -3,8 +3,9 @@ import { MdDialog, MdDialogRef } from "@angular/material";
 
 import { Observer } from 'rxjs/Observer';
 
-import { DialogoEntradaComponent, ModeloLista, EstadoRegion, Pais, DatosPaisService } from "../../utilidades";
-
+import { ModeloLista, EstadoRegion, Pais } from "../../utilidades";
+import { DialogoEntradaComponent, DialogoConfirmacionComponent } from "../../utilidades";
+import { DatosPaisService, DatosEstadoRegionService } from "../../utilidades";
 
 @Component({
   selector: 'app-estado-region-com',
@@ -13,80 +14,146 @@ import { DialogoEntradaComponent, ModeloLista, EstadoRegion, Pais, DatosPaisServ
 })
 export class EstadoRegionComComponent implements OnInit {
 
+  private idPaisSeleccionado: number;
   private paisSeleccionado: ModeloLista;
+  private estadoSeleccionado: ModeloLista;
   private paises: ModeloLista[] = [];
+  private estados: ModeloLista[] = [];
   private mensajeError: string;
 
-  constructor(public dialog: MdDialog, public datos: DatosPaisService) { }
+  constructor(public dialog: MdDialog, 
+              public datosPaises: DatosPaisService, 
+              public datosEstado: DatosEstadoRegionService) { }
 
-  public abrirDialogo(nuevo: boolean, paisSeleccionado?: ModeloLista){
+  private abrirDialogo(nuevo: boolean, paisSeleccionado?: ModeloLista){
     let dialogRef: MdDialogRef<DialogoEntradaComponent>;
     
     if (nuevo){
       dialogRef = this.dialog.open(DialogoEntradaComponent,{ data: {id: 0, nombre: ""} } );
-      dialogRef.afterClosed()
-      .subscribe( salida => {this.agregaPais( salida );} );
+      dialogRef.afterClosed().subscribe( (salida:ModeloLista) => {this.agregaEstado( salida );} );
     }else{
       dialogRef = this.dialog.open(DialogoEntradaComponent,{data: paisSeleccionado});
-      dialogRef.afterClosed()
-      .subscribe( salida => {this.editarPais( salida );} );
+      dialogRef.afterClosed().subscribe( (salida:ModeloLista) => {this.editarEstado( salida );} );
     }
   }
 
-  public agregaPais(entrada: ModeloLista): void {
-    let observador: Observer<Pais> = {
-      next: dato => this.actualizarLista(),
-      error: error => this.mensajeError = <any>error,
-      complete: () => null
-    };
-    let nuevoPais: Pais = {idPais: 0, nombre: entrada.nombre.toUpperCase()};
-    this.datos.agregarPais(nuevoPais).subscribe(observador);
+    public abrirDialogoConfirmacion(mensaje: string, id: number) {
+  
+    let dialogRef: MdDialogRef<DialogoConfirmacionComponent>;
+    dialogRef = this.dialog.open(DialogoConfirmacionComponent, {data: mensaje});
+    dialogRef.afterClosed().subscribe(salida => {this.borrarEstado(id, salida);});   
   }
 
-
-
-  public editarPais(entrada: ModeloLista): void {
-      let observador: Observer<Pais> = {
-      next: dato => this.actualizarLista(),
+  private agregaEstado(entrada: ModeloLista): void {
+    let observador: Observer<EstadoRegion> = {
+      next: dato => this.actualizarListaEstados(),
       error: error => this.mensajeError = <any>error,
       complete: () => null
     };
 
-    let nuevoPais: Pais = {idPais: entrada.id, nombre: entrada.nombre.toUpperCase()};
-    this.datos.agregarPais(nuevoPais).subscribe(observador);
+    if (entrada) {
+      let nuevoEstado: EstadoRegion = new EstadoRegion(); //{idPais: 0, nombre: entrada.nombre.toUpperCase()};
+      nuevoEstado.idEstadoRegion = null;
+      nuevoEstado.nombre = entrada.nombre.toUpperCase();
+      nuevoEstado.pais.idPais = this.paisSeleccionado.id;
+      nuevoEstado.pais.nombre = this.paisSeleccionado.nombre;
+
+      let estado: EstadoRegion = {idEstadoRegion: 0, nombre: entrada.nombre.toUpperCase(), pais:{idPais: this.idPaisSeleccionado, nombre: this.paisSeleccionado.nombre}};
+      this.datosEstado.agregarEstadoRegion(nuevoEstado).subscribe(observador);      
+    }
+  }
+
+  private editarEstado(entrada: ModeloLista): void {
+      let observador: Observer<EstadoRegion> = {
+      next: dato => this.actualizarListaEstados(),
+      error: error => this.mensajeError = <any>error,
+      complete: () => null
+    };
+    if (entrada) {
+      let nuevoEstado: EstadoRegion = new EstadoRegion();
+      nuevoEstado.idEstadoRegion = entrada.id; 
+      nuevoEstado.nombre = entrada.nombre.toUpperCase();
+      nuevoEstado.pais.idPais = this.paisSeleccionado.id;
+      nuevoEstado.pais.nombre = this.paisSeleccionado.nombre;
+
+      this.datosEstado.editarEstado(nuevoEstado).subscribe(observador);
+    }
   }
 
 
-  public borrarPais(id: number):void{
-    let indice: number = 1;
-    this.paises.splice(indice, 1);
+  private borrarEstado(id: number, resultado: boolean):void{
+    let observador: Observer<EstadoRegion> = {
+      next: dato => this.actualizarListaEstados(),
+      error: error => this.mensajeError = <any>error,
+      complete: () => null
+    };
+
+    if (resultado){
+      this.datosEstado.borrarEstado(id).subscribe(observador);
+    }
   }
 
   ngOnInit() {
-    this.actualizarLista();
+    this.actualizarListaPaises();
   }
 
-  actualizarLista():void {
+  private actualizarListaPaises():void {
       let observador: Observer<Pais[]> = {
-      next: dato => this.llenarLista(dato),
+      next: dato => this.llenarListaPaises(dato),
       error: error => this.mensajeError = <any>error,
       complete: () => null
     };
 
-    this.datos.getPaises().subscribe(observador);
+    this.datosPaises.getPaises().subscribe(observador);
   }
 
-  llenarLista(datos: Pais[]):void{
+  private llenarListaPaises(datos: Pais[]):void{
     this.paises.length = 0;
-    datos.forEach( s => this.paises.push({id: s.idPais, nombre: s.nombre}) );
+    datos.forEach( s => this.paises.push( {id: s.idPais, nombre: s.nombre} ) );
+  }
+
+
+  private actualizarListaEstados():void {
+      let observador: Observer<EstadoRegion[]> = {
+      next: dato => this.llenarListaEstados(dato),
+      error: error => this.mensajeError = <any>error,
+      complete: () => null
+    };
+
+    this.datosEstado.getEstadosPais(this.paisSeleccionado.id).subscribe(observador);
+  }
+
+  private llenarListaEstados(datos: EstadoRegion[]):void {
+    this.estados.length = 0;
+    datos.forEach( s => this.estados.push( {id: s.idEstadoRegion, nombre: s.nombre} ) );
   }
 
   eventoEjecucion(datos: {elemento: ModeloLista, accion: string}){
-    let nombre = datos.elemento.nombre;
-    let accion = datos.accion;
-    let mensaje = `Nombre de elemento: ${nombre} y acción a ejecutar: ${accion}`;
-    alert(mensaje);
+
+    if (datos.accion === 'editar') {
+
+      this.abrirDialogo(false, datos.elemento);
+   
+    } else if (datos.accion === 'borrar') {
+      let mensaje: string = '¿Desea borrar el estado?';
+      this.abrirDialogoConfirmacion(mensaje, datos.elemento.id);
+
+    }
+
   }
 
+  private establecePaisSeleccionado():void {
+
+    this.paisSeleccionado = this.paises.find(item => item.id === this.idPaisSeleccionado );
+
+    this.actualizarListaEstados();
+  }
+
+  public restablecedor():void {
+    this.idPaisSeleccionado = undefined;
+    this.paisSeleccionado = undefined;
+    this.estados.length = 0;
+    this.actualizarListaPaises();
+  }
 
 }

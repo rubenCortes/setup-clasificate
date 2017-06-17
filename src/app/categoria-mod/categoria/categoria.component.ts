@@ -3,34 +3,35 @@ import { MdDialog, MdDialogRef } from "@angular/material";
 
 import { Observer } from 'rxjs/Observer';
 
-import { ModeloLista, Pais, DatosPaisService } from "../../utilidades";
+import { ModeloLista, Categoria, DatosCategoriaService } from "../../utilidades";
+
 import { DialogoEntradaComponent, DialogoConfirmacionComponent } from "../../utilidades";
 
 @Component({
-  selector: 'app-pais-com',
-  templateUrl: './pais-com.component.html',
-  styleUrls: ['./pais-com.component.css']
+  selector: 'app-categoria',
+  templateUrl: './categoria.component.html',
+  styleUrls: ['./categoria.component.css']
 })
-export class PaisComComponent implements OnInit {
+export class CategoriaComponent implements OnInit {
 
-  private paisSeleccionado: ModeloLista;
-  private paises: ModeloLista[] = [];
+private categoriaSeleccionada: ModeloLista;
+  private categorias: ModeloLista[] = [];
   private mensajeError: string;
 
   constructor(public dialog: MdDialog, 
-              public datos: DatosPaisService) { }
+              public datos: DatosCategoriaService) { }
 
-  public abrirDialogo(nuevo: boolean, paisSeleccionado?: ModeloLista){
+  public abrirDialogo(nuevo: boolean, categoriaSeleccionada?: ModeloLista){
     let dialogRef: MdDialogRef<DialogoEntradaComponent>;
     
     if (nuevo){ // Crear un país
       dialogRef = this.dialog.open(DialogoEntradaComponent,{ data: {id: 0, nombre: ""} } );
       dialogRef.afterClosed()
-      .subscribe( salida => {this.agregaPais( salida );} );
+      .subscribe( salida => {this.agregarCategoria( salida );} );
     }else{ // Editar un país
-      dialogRef = this.dialog.open(DialogoEntradaComponent,{data: paisSeleccionado});
+      dialogRef = this.dialog.open(DialogoEntradaComponent,{data: categoriaSeleccionada});
       dialogRef.afterClosed()
-      .subscribe( salida => {this.editarPais( salida );} );
+      .subscribe( salida => {this.editarCategoria( salida );} );
     }
   }
 
@@ -38,42 +39,42 @@ export class PaisComComponent implements OnInit {
   
     let dialogRef: MdDialogRef<DialogoConfirmacionComponent>;
     dialogRef = this.dialog.open(DialogoConfirmacionComponent, {data: mensaje});
-    dialogRef.afterClosed().subscribe(salida => {this.borrarPais(id, salida);});   
+    dialogRef.afterClosed().subscribe(salida => {this.borrarCategoria(id, salida);});   
   }
 
-  public agregaPais(entrada: ModeloLista): void {
-    let observador: Observer<Pais> = {
+  public agregarCategoria(entrada: ModeloLista): void {
+    let observador: Observer<Categoria> = {
       next: dato => this.actualizarLista(),
       error: error => this.mensajeError = <any>error,
       complete: () => null
     };
     if (entrada) {
-      let nuevoPais: Pais = {idPais: 0, nombre: entrada.nombre.toUpperCase()};
-      this.datos.agregarPais(nuevoPais).subscribe(observador);
+      let nuevaCategoria: Categoria = {idCategoria: 0, nombre: entrada.nombre.toUpperCase()};
+      this.datos.agregarCategoria(nuevaCategoria).subscribe(observador);
     }
   }
 
-  public editarPais(entrada: ModeloLista): void {
-      let observador: Observer<Pais> = {
+  public editarCategoria(entrada: ModeloLista): void {
+      let observador: Observer<Categoria> = {
       next: dato => this.actualizarLista(),
       error: error => this.mensajeError = <any>error,
       complete: () => null
     };
     if (entrada){
-      let nuevoPais: Pais = {idPais: entrada.id, nombre: entrada.nombre.toUpperCase()};
-      this.datos.editarPais(nuevoPais).subscribe(observador);
+      let nuevaCategoria: Categoria = {idCategoria: entrada.id, nombre: entrada.nombre.toUpperCase()};
+      this.datos.editarCategoria(nuevaCategoria).subscribe(observador);
     }
   }
 
-  public borrarPais(id: number, resultado: boolean): void {
-    let observador: Observer<Pais> = {
+  public borrarCategoria(id: number, resultado: boolean): void {
+    let observador: Observer<Categoria> = {
       next: dato => this.actualizarLista(),
       error: error => this.mensajeError = <any>error,
       complete: () => null
     };
 
     if (resultado){
-      this.datos.borrarPais(id).subscribe(observador);
+      this.datos.borrarCategoria(id).subscribe(observador);
     }
 
   }
@@ -84,18 +85,18 @@ export class PaisComComponent implements OnInit {
   }
 
   actualizarLista():void {
-      let observador: Observer<Pais[]> = {
+      let observador: Observer<Categoria[]> = {
       next: dato => this.llenarLista(dato),
       error: error => this.mensajeError = <any>error,
       complete: () => null
     };
 
-    this.datos.getPaises().subscribe(observador);
+    this.datos.getCategorias().subscribe(observador);
   }
 
-  llenarLista(datos: Pais[]):void{
-    this.paises.length = 0;
-    datos.forEach( s => this.paises.push({id: s.idPais, nombre: s.nombre}) );
+  llenarLista(datos: Categoria[]):void{
+    this.categorias.length = 0;
+    datos.forEach( s => this.categorias.push({id: s.idCategoria, nombre: s.nombre}) );
   }
 
   eventoEjecucion(datos: {elemento: ModeloLista, accion: string}){
@@ -105,7 +106,7 @@ export class PaisComComponent implements OnInit {
       this.abrirDialogo(false, datos.elemento);
    
     } else if (datos.accion === 'borrar') {
-      let mensaje: string = '¿Desea borrar el páis?';
+      let mensaje: string = '¿Desea borrar la categoria?';
       this.abrirDialogoConfirmacion(mensaje, datos.elemento.id);
 
     }

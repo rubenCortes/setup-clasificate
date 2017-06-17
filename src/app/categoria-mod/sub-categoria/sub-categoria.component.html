@@ -1,0 +1,15 @@
+<h2>Categoría</h2>
+
+
+<md-select placeholder="Categoría" [(ngModel)] = "idCategoriaSeleccionada" name = "categoria" (change)="estableceCategoriaSeleccionada()" >
+   <md-option *ngFor="let categoria of categorias" [value]="categoria.id" >{{ pais.nombre }}</md-option>
+</md-select>
+
+<div *ngIf="categoriaSeleccionada">
+    <h3>Nombre: {{categoriaSeleccionada.nombre}} Identificador: {{categoriaSeleccionada.id}}</h3>
+</div>
+
+<button md-button (click)="abrirDialogo(true)">Agregar <md-icon>add_circle</md-icon></button>
+
+<h2>Sub categorías</h2>
+<app-lista [items]="subCategorias" (accionItem)="eventoEjecucion($event)"></app-lista>

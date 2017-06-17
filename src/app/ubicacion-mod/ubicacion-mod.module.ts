@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { FormsModule } from '@angular/forms';
+ 
 import { MaterialModule } from "@angular/material";
-import { UtilidadesModule, DialogoEntradaComponent } from "../utilidades";
-import { DatosPaisService } from "../utilidades";
+import { UtilidadesModule, DialogoEntradaComponent, DialogoConfirmacionComponent } from "../utilidades";
+import { DatosPaisService, DatosEstadoRegionService, DatosPoblacionService } from "../utilidades";
 
 
 import { UbicacionModRoutingModule } from './ubicacion-mod-routing.module';
@@ -17,6 +18,7 @@ import { PoblacionComComponent } from './poblacion-com/poblacion-com.component';
     UtilidadesModule,
     MaterialModule,
     CommonModule,
+    FormsModule,
     UbicacionModRoutingModule
   ],
   declarations: [
@@ -25,7 +27,7 @@ import { PoblacionComComponent } from './poblacion-com/poblacion-com.component';
     EstadoRegionComComponent, 
     PoblacionComComponent
   ],
-  providers: [DatosPaisService],
-  entryComponents: [DialogoEntradaComponent]
+  providers: [DatosPaisService, DatosEstadoRegionService, DatosPoblacionService],
+  entryComponents: [DialogoEntradaComponent, DialogoConfirmacionComponent]
 })
 export class UbicacionModModule { }

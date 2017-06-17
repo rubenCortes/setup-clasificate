@@ -4,41 +4,41 @@ import { Observer } from 'rxjs/Observer';
 import { Http, Response } from "@angular/http";
 import { Headers, RequestOptions } from '@angular/http';
 
-import { Poblacion } from "../utilidades";
+import { SubCategoria } from "../utilidades";
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
-export class DatosPoblacionService {
+export class DatosSubCategoriaService {
 
-  private urlPoblacion: string = 'http://192.168.10.80:8080/AppAdmin/recursos/poblacion/';
-  private urlPoblacionEstado: string = 'http://192.168.10.80:8080/AppAdmin/recursos/poblacion/estado/';
+  private urlSubCategoria: string = 'http://192.168.10.80:8080/AppAdmin/recursos/categoria/';
+  private urlSubCategoriaCategoria: string = 'http://192.168.10.80:8080/AppAdmin/recursos/categoria/subcategoria/';
 
   constructor( private http: Http ) { }
 
-  private extractData(res: Response): Poblacion[] {
+  private extractData(res: Response): SubCategoria[] {
     let body = res.json();
-    let datos: Poblacion[] = body;
+    let datos: SubCategoria[] = body;
     return datos;
   }
 
-  getPoblaciones(): Observable<Poblacion[]> {
-    return this.http.get(this.urlPoblacion)
+  getSubCategorias(): Observable<SubCategoria[]> {
+    return this.http.get(this.urlSubCategoria)
                   .map(this.extractData)
                   .catch(this.handleError);
   }
 
-  getPoblacionesEstado(id: number): Observable<Poblacion[]> {
-    return this.http.get(this.urlPoblacionEstado + id)
+  getSubCategoriasCategoria(id: number): Observable<SubCategoria[]> {
+    return this.http.get(this.urlSubCategoriaCategoria + id)
                     .map(this.extractData)
                     .catch(this.handleError);
 
   }
 
-  private extractDataSingle(res: Response): Poblacion {
+  private extractDataSingle(res: Response): SubCategoria {
     let body = res.json();
-    let dato: Poblacion = body;
+    let dato: SubCategoria = body;
     return dato;
   }
 
@@ -56,29 +56,29 @@ export class DatosPoblacionService {
     return Observable.throw(errMsg);
   }
 
-  agregarPoblacion(estado: Poblacion): Observable<Poblacion>{
+  agregarSubCategoria(estado: SubCategoria): Observable<SubCategoria>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     let body = JSON.stringify(estado);
-    return this.http.post(this.urlPoblacion, body, options)
+    return this.http.post(this.urlSubCategoria, body, options)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }
 
 
-  editarPoblacion(estado: Poblacion): Observable<Poblacion>{
+  editarSubCategoria(estado: SubCategoria): Observable<SubCategoria>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     let body = JSON.stringify(estado);
-    return this.http.put(this.urlPoblacion, body, options)
+    return this.http.put(this.urlSubCategoria, body, options)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }
 
-    borrarPoblacion(id: number):Observable<Poblacion>{
+    borrarSubCategoria(id: number):Observable<SubCategoria>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    return this.http.delete(this.urlPoblacion + id)
+    return this.http.delete(this.urlSubCategoria + id)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }

@@ -4,38 +4,46 @@ import { Observer } from 'rxjs/Observer';
 import { Http, Response } from "@angular/http";
 import { Headers, RequestOptions } from '@angular/http';
 
-import { Pais } from "../utilidades";
+import { EstadoRegion } from "../utilidades";
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class DatosEstadoRegionService {
-  private datosPais: string = 'http://192.168.10.80:8080/AppClasificateAdmin/recursos/pais/';
+  private urlEstadoRegion: string = 'http://192.168.10.80:8080/AppAdmin/recursos/estadoregion/';
+  private urlEstadoRegionPais: string = 'http://192.168.10.80:8080/AppAdmin/recursos/estadoregion/pais/';
 
   constructor( private http: Http ) { }
 
-  private extractData(res: Response): Pais[] {
+  private extractData(res: Response): EstadoRegion[] {
     let body = res.json();
-    let datos: Pais[] = body;
-    //alert(datos[1].nombre);
+    let datos: EstadoRegion[] = body;
     return datos;
   }
 
-  getPaises(): Observable<Pais[]> {
-    return this.http.get(this.datosPais)
+  getEstados(): Observable<EstadoRegion[]> {
+    return this.http.get(this.urlEstadoRegion)
                   .map(this.extractData)
                   .catch(this.handleError);
   }
 
-  private extractDataSingle(res: Response): Pais {
+  getEstadosPais(id: number): Observable<EstadoRegion[]> {
+    let urlDatos: string = this.urlEstadoRegionPais + id;
+    return this.http.get(this.urlEstadoRegionPais + id)
+                    .map(this.extractData)
+                    .catch(this.handleError);
+
+  }
+
+  private extractDataSingle(res: Response): EstadoRegion {
     let body = res.json();
-    let dato: Pais = body;
+    let dato: EstadoRegion = body;
     return dato;
   }
 
-  getPais(id: number): Observable<Pais> {
-    return this.http.get(this.datosPais + id)
+  getEstado(id: number): Observable<EstadoRegion> {
+    return this.http.get(this.urlEstadoRegion + id)
                   .map(this.extractDataSingle)
                   .catch(this.handleError);
   }
@@ -54,23 +62,29 @@ export class DatosEstadoRegionService {
     return Observable.throw(errMsg);
   }
 
-  agregarPais(pais: Pais): Observable<Pais>{
+  agregarEstadoRegion(estado: EstadoRegion): Observable<EstadoRegion>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    //alert(pais.nombre) ;
-    let body = JSON.stringify(pais);
-    return this.http.post(this.datosPais, body, options)
+    let body = JSON.stringify(estado);
+    return this.http.post(this.urlEstadoRegion, body, options)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }
 
 
-  editarPais(pais: Pais): Observable<Pais>{
+  editarEstado(estado: EstadoRegion): Observable<EstadoRegion>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    //alert(pais.nombre) ;
-    let body = JSON.stringify(pais);
-    return this.http.put(this.datosPais, body, options)
+    let body = JSON.stringify(estado);
+    return this.http.put(this.urlEstadoRegion, body, options)
+                    .map(this.extractDataSingle)
+                    .catch(this.handleError);
+  }
+
+    borrarEstado(id: number):Observable<EstadoRegion>{
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.delete(this.urlEstadoRegion + id)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }

@@ -1,0 +1,8 @@
+<h1 md-dialog-title>Confirmación</h1>
+<div md-dialog-content class="alto-contenido">
+  <h3>{{mensaje}}</h3>
+</div>
+<div md-dialog-actions>
+  <button md-button (click)="dialogRef.close(true)">Sí</button>
+  <button md-button (click)="dialogRef.close(false)">No</button>
+</div>

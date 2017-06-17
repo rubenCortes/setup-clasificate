@@ -14,20 +14,14 @@ import 'rxjs/add/operator/catch';
 export class DatosPaisService {
   //private datosPais: string = 'http://192.168.10.80:8080/Principal/recursos/servicio/queso/';
   //private datosPais: string = 'http://192.168.10.80:8080/AppDemo/recursos/pais/';
-  private datosPais: string = 'http://192.168.10.80:8080/AppClasificateAdmin/recursos/pais/';
+  private datosPais: string = 'http://192.168.10.80:8080/AppAdmin/recursos/pais/';
 
   constructor( private http: Http ) { }
 
   private extractData(res: Response): Pais[] {
     let body = res.json();
     let datos: Pais[] = body;
-    datos.forEach(element => {
-      if(element.idPais == 1){
-        alert(element.estadoRegionList);
-      }
-    });
 
-    //alert(datos[1].nombre);
     return datos;
   }
 
@@ -66,7 +60,6 @@ export class DatosPaisService {
   agregarPais(pais: Pais): Observable<Pais>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    //alert(pais.nombre) ;
     let body = JSON.stringify(pais);
     return this.http.post(this.datosPais, body, options)
                     .map(this.extractDataSingle)
@@ -77,9 +70,17 @@ export class DatosPaisService {
   editarPais(pais: Pais): Observable<Pais>{
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    //alert(pais.nombre) ;
     let body = JSON.stringify(pais);
+    alert(body);
     return this.http.put(this.datosPais, body, options)
+                    .map(this.extractDataSingle)
+                    .catch(this.handleError);
+  }
+
+  borrarPais(id: number):Observable<Pais>{
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.delete(this.datosPais + id)
                     .map(this.extractDataSingle)
                     .catch(this.handleError);
   }

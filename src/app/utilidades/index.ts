@@ -2,7 +2,14 @@ export * from './modelo-lista';
 export * from './pais';
 export * from './estado-region';
 export * from './poblacion';
+export * from './categoria';
+export * from './sub-categoria';
 export * from './datos-pais.service';
-export * from './dialogo-entrada/dialogo-entrada.component'
+export * from './datos-estado-region.service';
+export * from './datos-poblacion.service';
+export * from './datos-categoria.service';
+export * from './datos-sub-categoria.service';
+export * from './dialogo-entrada/dialogo-entrada.component';
+export * from './dialogo-confirmacion/dialogo-confirmacion.component';
 export * from './lista/lista.component';
 export * from './utilidades.module';

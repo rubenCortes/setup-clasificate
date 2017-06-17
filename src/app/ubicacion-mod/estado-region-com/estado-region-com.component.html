@@ -1,8 +1,15 @@
 <h2>Pais</h2>
 
-<md-select placeholder="Pais">
-   <md-option *ngFor="let pais of paises" [value]="pais.idPais">{{ pais.nombre }}</md-option>
+
+<md-select placeholder="Pais" [(ngModel)] = "idPaisSeleccionado" name = "pais" (change)="establecePaisSeleccionado()" >
+   <md-option *ngFor="let pais of paises" [value]="pais.id" >{{ pais.nombre }}</md-option>
 </md-select>
+
+<div *ngIf="paisSeleccionado">
+    <h3>Nombre: {{paisSeleccionado.nombre}} Identificador: {{paisSeleccionado.id}}</h3>
+</div>
+
+<button md-button (click)="abrirDialogo(true)">Agregar <md-icon>add_circle</md-icon></button>
 
 <h2>Estados</h2>
 <app-lista [items]="estados" (accionItem)="eventoEjecucion($event)"></app-lista>

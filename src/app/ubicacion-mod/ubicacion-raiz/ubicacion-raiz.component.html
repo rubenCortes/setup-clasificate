@@ -1,9 +1,11 @@
-<md-tab-group>
-  <md-tab label="País">
+<md-tab-group #tabulador (focusChange)="cambioTab($event)">
+  <md-tab label="País" > 
     <app-pais-com></app-pais-com>
   </md-tab>
   <md-tab label="Estado">
+    <app-estado-region-com></app-estado-region-com>
   </md-tab>
   <md-tab label="Población">
+    <app-poblacion-com></app-poblacion-com>
   </md-tab>  
 </md-tab-group>
